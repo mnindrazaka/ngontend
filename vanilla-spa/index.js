@@ -1,21 +1,29 @@
-function Navbar() {
-  const linkHome = document.createElement("a");
-  linkHome.href = "#home";
-  linkHome.textContent = "Home";
-  linkHome.onclick = function (event) {
+let state = {
+  searchValue: "",
+};
+
+function setState(newState) {
+  const nextState = { ...state, ...newState };
+  state = nextState;
+  render();
+}
+
+function Link(props) {
+  const link = document.createElement("a");
+  link.href = props.href;
+  link.textContent = props.textContent;
+  link.onclick = function (event) {
     event.preventDefault();
     window.history.pushState(null, "", event.target.href);
     render();
   };
 
-  const linkAbout = document.createElement("a");
-  linkAbout.href = "#about";
-  linkAbout.textContent = "About";
-  linkAbout.onclick = function (event) {
-    event.preventDefault();
-    window.history.pushState(null, "", event.target.href);
-    render();
-  };
+  return link;
+}
+
+function Navbar() {
+  const linkHome = Link({ href: "#home", textContent: "Home" });
+  const linkAbout = Link({ href: "#about", textContent: "About" });
 
   const container = document.createElement("div");
   container.appendChild(linkHome);
@@ -29,13 +37,28 @@ function HomePage() {
   const title = document.createElement("h1");
   title.textContent = "Home";
 
+  const textPreview = document.createElement("p");
+  textPreview.textContent = state.searchValue;
+
   const searchInput = document.createElement("input");
   searchInput.placeholder = "input your product name";
+  searchInput.value = state.searchValue;
+  searchInput.oninput = function (event) {
+    setState({ searchValue: event.target.value });
+  };
+
+  const clearButton = document.createElement("button");
+  clearButton.textContent = "Clear";
+  clearButton.onclick = function () {
+    setState({ searchValue: "" });
+  };
 
   const container = document.createElement("div");
   container.appendChild(navbar);
   container.appendChild(title);
   container.appendChild(searchInput);
+  container.appendChild(clearButton);
+  container.appendChild(textPreview);
 
   return container;
 }
