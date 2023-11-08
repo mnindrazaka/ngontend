@@ -41,6 +41,7 @@ function HomePage() {
   textPreview.textContent = state.searchValue;
 
   const searchInput = document.createElement("input");
+  searchInput.id = "searchInput";
   searchInput.placeholder = "input your product name";
   searchInput.value = state.searchValue;
   searchInput.oninput = function (event) {
@@ -91,8 +92,21 @@ function App() {
 
 function render() {
   const root = document.getElementById("root");
+
+  const focusedElement = document.activeElement;
+  const focusedElementId = focusedElement.id;
+  const selectionStart = focusedElement.selectionStart;
+  const selectionEnd = focusedElement.selectionEnd;
+
   root.innerHTML = "";
   root.appendChild(App());
+
+  if (focusedElementId) {
+    const focusedElement = document.getElementById(focusedElementId);
+    focusedElement.focus();
+    focusedElement.selectionStart = selectionStart;
+    focusedElement.selectionEnd = selectionEnd;
+  }
 }
 
 render();
