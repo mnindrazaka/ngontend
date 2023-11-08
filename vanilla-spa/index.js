@@ -1,5 +1,8 @@
 let state = {
-  searchValue: "",
+  inputProductName: "",
+  inputProductPrice: 0,
+  products: [{ name: "Nasi Goreng", price: 10000 }],
+  total: 10000,
 };
 
 function setState(newState) {
@@ -35,31 +38,60 @@ function HomePage() {
   const navbar = Navbar();
 
   const title = document.createElement("h1");
-  title.textContent = "Home";
+  title.textContent = "Daftar Belanja";
 
-  const textPreview = document.createElement("p");
-  textPreview.textContent = state.searchValue;
-
-  const searchInput = document.createElement("input");
-  searchInput.id = "searchInput";
-  searchInput.placeholder = "input your product name";
-  searchInput.value = state.searchValue;
-  searchInput.oninput = function (event) {
-    setState({ searchValue: event.target.value });
+  const productNameInput = document.createElement("input");
+  productNameInput.id = "productNameInput";
+  productNameInput.placeholder = "nama barang";
+  productNameInput.value = state.inputProductName;
+  productNameInput.oninput = function (event) {
+    setState({ inputProductName: event.target.value });
   };
 
-  const clearButton = document.createElement("button");
-  clearButton.textContent = "Clear";
-  clearButton.onclick = function () {
-    setState({ searchValue: "" });
+  const productPriceInput = document.createElement("input");
+  productPriceInput.id = "productPriceInput";
+  productPriceInput.type = "number";
+  productPriceInput.placeholder = "harga barang";
+  productPriceInput.value = state.inputProductPrice;
+  productPriceInput.oninput = function (event) {
+    setState({ inputProductPrice: parseInt(event.target.value) });
   };
+
+  const submitButton = document.createElement("button");
+  submitButton.textContent = "Simpan";
+  submitButton.onclick = function () {
+    setState({
+      products: [
+        ...state.products,
+        { name: state.inputProductName, price: state.inputProductPrice },
+      ],
+      inputProductName: "",
+      inputProductPrice: 0,
+      total: state.total + state.inputProductPrice,
+    });
+  };
+
+  const productList = document.createElement("ol");
+
+  for (let i = 0; i < state.products.length; i++) {
+    const product = state.products[i];
+
+    const productListItem = document.createElement("li");
+    productListItem.textContent = `${product.name} : Rp. ${product.price}`;
+    productList.appendChild(productListItem);
+  }
+
+  const totalText = document.createElement("p");
+  totalText.textContent = `Rp. ${state.total}`;
 
   const container = document.createElement("div");
   container.appendChild(navbar);
   container.appendChild(title);
-  container.appendChild(searchInput);
-  container.appendChild(clearButton);
-  container.appendChild(textPreview);
+  container.appendChild(productNameInput);
+  container.appendChild(productPriceInput);
+  container.appendChild(submitButton);
+  container.appendChild(productList);
+  container.appendChild(totalText);
 
   return container;
 }
@@ -91,6 +123,8 @@ function App() {
 }
 
 function render() {
+  console.log(state);
+
   const root = document.getElementById("root");
 
   const focusedElement = document.activeElement;
