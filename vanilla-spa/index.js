@@ -77,12 +77,30 @@ function HomePage() {
     const product = state.products[i];
 
     const productListItem = document.createElement("li");
-    productListItem.textContent = `${product.name} : Rp. ${product.price}`;
+
+    const listItemText = document.createElement("span");
+    listItemText.textContent = `${product.name} : Rp. ${product.price}`;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.onclick = function () {
+      setState({
+        products: state.products.filter((_, index) => i !== index),
+        total: state.total - product.price,
+      });
+    };
+
+    productListItem.append(listItemText);
+    productListItem.append(deleteButton);
+
     productList.appendChild(productListItem);
   }
 
   const totalText = document.createElement("p");
   totalText.textContent = `Rp. ${state.total}`;
+
+  const emptyText = document.createElement("p");
+  emptyText.textContent = "Daftar Belanjaan Kosong, Silahkan Ditambah Dulu";
 
   const container = document.createElement("div");
   container.appendChild(navbar);
@@ -90,7 +108,7 @@ function HomePage() {
   container.appendChild(productNameInput);
   container.appendChild(productPriceInput);
   container.appendChild(submitButton);
-  container.appendChild(productList);
+  container.appendChild(state.products.length > 0 ? productList : emptyText);
   container.appendChild(totalText);
 
   return container;
