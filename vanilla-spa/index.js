@@ -1,8 +1,12 @@
 let state = {
   inputProductName: "",
   inputProductPrice: 0,
-  products: [{ name: "Nasi Goreng", price: 10000 }],
-  total: 10000,
+  products: [
+    { name: "Nasi Goreng", price: 10000 },
+    { name: "Ayam Goreng", price: 13000 },
+  ],
+  total: 23000,
+  editIndex: null,
 };
 
 function setState(newState) {
@@ -60,14 +64,41 @@ function HomePage() {
   const submitButton = document.createElement("button");
   submitButton.textContent = "Simpan";
   submitButton.onclick = function () {
+    const newProducts =
+      state.editIndex === null
+        ? [
+            ...state.products,
+            { name: state.inputProductName, price: state.inputProductPrice },
+          ]
+        : state.products.map((product, index) =>
+            state.editIndex === index
+              ? { name: state.inputProductName, price: state.inputProductPrice }
+              : product
+          );
+
+    const newTotal =
+      state.editIndex === null
+        ? state.total + state.inputProductPrice
+        : state.total -
+          state.products[state.editIndex].price +
+          state.inputProductPrice;
+
     setState({
-      products: [
-        ...state.products,
-        { name: state.inputProductName, price: state.inputProductPrice },
-      ],
+      products: newProducts,
       inputProductName: "",
       inputProductPrice: 0,
-      total: state.total + state.inputProductPrice,
+      total: newTotal,
+      editIndex: null,
+    });
+  };
+
+  const cancelButton = document.createElement("button");
+  cancelButton.textContent = "Batal";
+  cancelButton.onclick = function () {
+    setState({
+      inputProductName: "",
+      inputProductPrice: 0,
+      editIndex: null,
     });
   };
 
@@ -90,7 +121,20 @@ function HomePage() {
       });
     };
 
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.onclick = function () {
+      setState({
+        inputProductName: product.name,
+        inputProductPrice: product.price,
+        editIndex: i,
+      });
+    };
+
+    console.log(state);
+
     productListItem.append(listItemText);
+    productListItem.append(editButton);
     productListItem.append(deleteButton);
 
     productList.appendChild(productListItem);
@@ -108,6 +152,11 @@ function HomePage() {
   container.appendChild(productNameInput);
   container.appendChild(productPriceInput);
   container.appendChild(submitButton);
+
+  if (state.editIndex !== null) {
+    container.appendChild(cancelButton);
+  }
+
   container.appendChild(state.products.length > 0 ? productList : emptyText);
   container.appendChild(totalText);
 
