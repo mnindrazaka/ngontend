@@ -1,10 +1,9 @@
 let state = {
   inputProductName: "",
   inputProductPrice: 0,
-  products: [
+  products: JSON.parse(localStorage.getItem("products")) ?? [
+    { name: "Ayam Goreng", price: 15000 },
     { name: "Nasi Goreng", price: 10000 },
-    { name: "Ayam Goreng", price: 13000 },
-    { name: "Nasi Goreng Sambal Matah", price: 15000 },
   ],
   editIndex: null,
 };
@@ -76,6 +75,8 @@ function HomePage() {
               : product
           );
 
+    localStorage.setItem("products", JSON.stringify(newProducts));
+
     setState({
       products: newProducts,
       inputProductName: "",
@@ -107,9 +108,9 @@ function HomePage() {
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.onclick = function () {
-      setState({
-        products: state.products.filter((_, index) => i !== index),
-      });
+      const newProducts = state.products.filter((_, index) => i !== index);
+      localStorage.setItem("products", JSON.stringify(newProducts));
+      setState({ products: newProducts });
     };
 
     const editButton = document.createElement("button");
@@ -121,8 +122,6 @@ function HomePage() {
         editIndex: i,
       });
     };
-
-    console.log(state);
 
     productListItem.append(listItemText);
     productListItem.append(editButton);
