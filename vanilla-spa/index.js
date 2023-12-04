@@ -4,8 +4,8 @@ let state = {
   products: [
     { name: "Nasi Goreng", price: 10000 },
     { name: "Ayam Goreng", price: 13000 },
+    { name: "Nasi Goreng Sambal Matah", price: 15000 },
   ],
-  total: 23000,
   editIndex: null,
 };
 
@@ -76,18 +76,10 @@ function HomePage() {
               : product
           );
 
-    const newTotal =
-      state.editIndex === null
-        ? state.total + state.inputProductPrice
-        : state.total -
-          state.products[state.editIndex].price +
-          state.inputProductPrice;
-
     setState({
       products: newProducts,
       inputProductName: "",
       inputProductPrice: 0,
-      total: newTotal,
       editIndex: null,
     });
   };
@@ -117,7 +109,6 @@ function HomePage() {
     deleteButton.onclick = function () {
       setState({
         products: state.products.filter((_, index) => i !== index),
-        total: state.total - product.price,
       });
     };
 
@@ -140,8 +131,10 @@ function HomePage() {
     productList.appendChild(productListItem);
   }
 
+  const total = state.products.reduce((prev, curr) => prev + curr.price, 0);
+
   const totalText = document.createElement("p");
-  totalText.textContent = `Rp. ${state.total}`;
+  totalText.textContent = `Rp. ${total}`;
 
   const emptyText = document.createElement("p");
   emptyText.textContent = "Daftar Belanjaan Kosong, Silahkan Ditambah Dulu";
