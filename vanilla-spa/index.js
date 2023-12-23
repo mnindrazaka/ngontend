@@ -74,10 +74,10 @@ function HomePage() {
   submitButton.onclick = function () {
     const newProducts =
       state.editIndex === null
-        ? [
-            ...state.products,
-            { name: state.inputProductName, price: state.inputProductPrice },
-          ]
+        ? state.products.concat({
+            name: state.inputProductName,
+            price: state.inputProductPrice,
+          })
         : state.products.map((product, index) =>
             state.editIndex === index
               ? { name: state.inputProductName, price: state.inputProductPrice }
