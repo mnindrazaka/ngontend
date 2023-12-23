@@ -8,10 +8,19 @@ let state = {
   editIndex: null,
 };
 
+function onStateChange(prevState, nextState) {
+  if (prevState.products !== nextState.products) {
+    localStorage.setItem("products", JSON.stringify(nextState.products));
+  }
+}
+
 function setState(newState) {
+  const prevState = { ...state };
   const nextState = { ...state, ...newState };
   state = nextState;
+
   render();
+  onStateChange(prevState, nextState);
 }
 
 function Link(props) {
@@ -75,8 +84,6 @@ function HomePage() {
               : product
           );
 
-    localStorage.setItem("products", JSON.stringify(newProducts));
-
     setState({
       products: newProducts,
       inputProductName: "",
@@ -109,7 +116,6 @@ function HomePage() {
     deleteButton.textContent = "Delete";
     deleteButton.onclick = function () {
       const newProducts = state.products.filter((_, index) => i !== index);
-      localStorage.setItem("products", JSON.stringify(newProducts));
       setState({ products: newProducts });
     };
 
