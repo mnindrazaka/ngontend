@@ -1,13 +1,13 @@
 const http = require("http");
 const fs = require("fs");
-const url = require("url");
+const path = require("path");
 
 http
   .createServer(function (req, res) {
-    const filePath =
-      req.url === "/" ? "vanilla-spa/index.html" : "vanilla-spa" + req.url;
+    const extention = path.extname(req.url);
+    const filePath = extention === "" ? "/index.html" : req.url;
 
-    fs.readFile(filePath, function (err, data) {
+    fs.readFile("vanilla-spa" + filePath, function (err, data) {
       if (err) {
         res.writeHead(404);
         res.write("not found");

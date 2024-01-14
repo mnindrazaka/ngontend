@@ -1,5 +1,5 @@
 let state = {
-  hash: window.location.hash,
+  path: window.location.pathname,
   inputProductName: "",
   inputProductPrice: 0,
   products: JSON.parse(localStorage.getItem("products")) ?? [
@@ -14,8 +14,8 @@ function onStateChange(prevState, nextState) {
     localStorage.setItem("products", JSON.stringify(nextState.products));
   }
 
-  if (prevState.hash !== nextState.hash) {
-    window.history.pushState(null, "", nextState.hash);
+  if (prevState.path !== nextState.path) {
+    window.history.pushState(null, "", nextState.path);
   }
 }
 
@@ -35,7 +35,7 @@ function Link(props) {
   link.onclick = function (event) {
     event.preventDefault();
     const url = new URL(event.target.href);
-    setState({ hash: url.hash });
+    setState({ path: url.pathname });
     render();
   };
 
@@ -43,8 +43,8 @@ function Link(props) {
 }
 
 function Navbar() {
-  const linkHome = Link({ href: "#home", textContent: "Home" });
-  const linkAbout = Link({ href: "#about", textContent: "About" });
+  const linkHome = Link({ href: "/home", textContent: "Home" });
+  const linkAbout = Link({ href: "/about", textContent: "About" });
 
   const container = document.createElement("div");
   container.appendChild(linkHome);
@@ -184,9 +184,9 @@ function App() {
   const homePage = HomePage();
   const aboutPage = AboutPage();
 
-  if (state.hash === "#home") {
+  if (state.path === "/" || state.path === "/home") {
     return homePage;
-  } else if (state.hash === "#about") {
+  } else if (state.path === "/about") {
     return aboutPage;
   } else {
     return homePage;
