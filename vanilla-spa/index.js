@@ -1,4 +1,5 @@
 let state = {
+  hash: window.location.hash,
   inputProductName: "",
   inputProductPrice: 0,
   products: JSON.parse(localStorage.getItem("products")) ?? [
@@ -11,6 +12,10 @@ let state = {
 function onStateChange(prevState, nextState) {
   if (prevState.products !== nextState.products) {
     localStorage.setItem("products", JSON.stringify(nextState.products));
+  }
+
+  if (prevState.hash !== nextState.hash) {
+    window.history.pushState(null, "", nextState.hash);
   }
 }
 
@@ -29,7 +34,8 @@ function Link(props) {
   link.textContent = props.textContent;
   link.onclick = function (event) {
     event.preventDefault();
-    window.history.pushState(null, "", event.target.href);
+    const url = new URL(event.target.href);
+    setState({ hash: url.hash });
     render();
   };
 
@@ -178,9 +184,9 @@ function App() {
   const homePage = HomePage();
   const aboutPage = AboutPage();
 
-  if (window.location.hash === "#home") {
+  if (state.hash === "#home") {
     return homePage;
-  } else if (window.location.hash === "#about") {
+  } else if (state.hash === "#about") {
     return aboutPage;
   } else {
     return homePage;
